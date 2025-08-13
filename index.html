@@ -1,0 +1,1640 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Anatomy & Physiology 120Q Online Quiz</title>
+<style>
+  :root {
+    --bg: #f9fafb;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --ok: #16a34a;
+    --bad: #dc2626;
+    --accent: #2563eb;
+    --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; color: var(--ink); background: var(--bg);
+  }
+  header {
+    position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border);
+    z-index: 10;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 1rem; }
+  h1 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); margin: 0.2rem 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: .5rem; }
+  button {
+    border: 1px solid var(--border); background: var(--accent); color: #fff;
+    padding: .6rem .9rem; border-radius: .6rem; cursor: pointer; font-weight: 600;
+  }
+  button.secondary { background: #fff; color: var(--ink); }
+  #scoreBox { font-weight: 700; margin-left: auto; }
+  main .wrap { display: grid; gap: 1rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: .8rem;
+    padding: 1rem;
+  }
+  .meta { font-size: .9rem; color: var(--muted); margin-bottom: .25rem; }
+  .stem { margin: .3rem 0 .7rem 0; font-weight: 600; }
+  .options { list-style: none; padding: 0; margin: 0; display: grid; gap: .4rem; }
+  .option { border: 1px solid var(--border); border-radius: .6rem; padding: .6rem .6rem; background: #fff; }
+  .option.correct { border-color: var(--ok); box-shadow: 0 0 0 2px rgba(22,163,74,0.15) inset; }
+  .option.incorrect { border-color: var(--bad); box-shadow: 0 0 0 2px rgba(220,38,38,0.12) inset; }
+  .feedback { margin-top: .5rem; font-size: .95rem; }
+  .feedback .ok { color: var(--ok); font-weight: 700; }
+  .feedback .bad { color: var(--bad); font-weight: 700; }
+  .tag { display:inline-block; padding:.15rem .5rem; border-radius:.5rem; background:#eef2ff; color:#3730a3; font-size:.75rem; font-weight:700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+  @media print {
+    header, #scoreBox, .controls button { display:none !important; }
+    body { background: #fff; }
+    .card { break-inside: avoid; }
+  }
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>120-Item MCQ • Digestive System • Metabolism • Urinary System • Endocrine (Major Hormones)</h1>
+    <div class="controls">
+      <button id="submitBtn" title="Calculate your score">Submit &amp; Score</button>
+      <button id="resetBtn" class="secondary" title="Clear all answers and feedback">Reset</button>
+      <div id="scoreBox" aria-live="polite"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" id="quiz"></div>
+</main>
+
+<script>
+const QUESTIONS = [
+  {
+    "topic": "Digestive System",
+    "stem": "Which enzyme begins the chemical digestion of starch in the mouth?",
+    "options": [
+      "Pepsin",
+      "Amylase",
+      "Lipase",
+      "Trypsin"
+    ],
+    "answer": 1,
+    "explanation": "Salivary amylase (ptyalin) hydrolyzes starch into maltose and dextrins in the oral cavity."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Parietal (oxyntic) cells in the stomach secrete:",
+    "options": [
+      "Pepsinogen",
+      "Gastrin",
+      "Hydrochloric acid and intrinsic factor",
+      "Mucus"
+    ],
+    "answer": 2,
+    "explanation": "Parietal cells produce HCl to lower gastric pH and intrinsic factor needed for ileal B12 absorption."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "The primary role of bile is to:",
+    "options": [
+      "Hydrolyze dietary proteins",
+      "Emulsify dietary lipids",
+      "Digest starch to maltose",
+      "Neutralize all gastric acid"
+    ],
+    "answer": 1,
+    "explanation": "Bile salts emulsify fats, increasing surface area for pancreatic lipase; they don't enzymatically digest."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Chief cells in the gastric glands secrete:",
+    "options": [
+      "Secretin",
+      "Pepsinogen",
+      "Intrinsic factor",
+      "Histamine"
+    ],
+    "answer": 1,
+    "explanation": "Chief cells release pepsinogen, which is activated to pepsin by low pH to digest proteins."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Gastrin is secreted by G cells in response to peptides and vagal input and:",
+    "options": [
+      "Inhibits acid secretion",
+      "Stimulates acid secretion and gastric motility",
+      "Releases bile from the liver",
+      "Stimulates bicarbonate from pancreas"
+    ],
+    "answer": 1,
+    "explanation": "Gastrin promotes acid secretion via parietal cells and enhances gastric motility and mucosal growth."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Secretin is released from the duodenum primarily when chyme is:",
+    "options": [
+      "Fat-rich",
+      "Protein-rich",
+      "Acidic",
+      "Hyperosmotic only"
+    ],
+    "answer": 2,
+    "explanation": "Acidic chyme in the duodenum triggers secretin, which stimulates bicarbonate-rich pancreatic secretion."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Cholecystokinin (CCK) has all of the following effects EXCEPT:",
+    "options": [
+      "Stimulates pancreatic enzyme secretion",
+      "Contracts the gallbladder",
+      "Relaxes the sphincter of Oddi",
+      "Accelerates gastric emptying"
+    ],
+    "answer": 3,
+    "explanation": "CCK slows gastric emptying while promoting pancreatic enzymes and bile delivery to the duodenum."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Brush-border enzymes for final digestion of carbohydrates and peptides are located on:",
+    "options": [
+      "Chief cells",
+      "Enterocyte microvilli in the small intestine",
+      "Pancreatic acinar cells",
+      "Hepatocytes"
+    ],
+    "answer": 1,
+    "explanation": "Disaccharidases and peptidases are embedded in the microvilli of small-intestinal enterocytes."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Most nutrient absorption occurs in the:",
+    "options": [
+      "Stomach",
+      "Duodenum and jejunum",
+      "Cecum",
+      "Sigmoid colon"
+    ],
+    "answer": 1,
+    "explanation": "The small intestine—especially duodenum and jejunum—has extensive villi and microvilli for absorption."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Enterohepatic circulation recycles:",
+    "options": [
+      "Glucose",
+      "Bile salts",
+      "Pepsin",
+      "Amino acids"
+    ],
+    "answer": 1,
+    "explanation": "Bile salts are reabsorbed in the distal ileum and returned to the liver via the portal vein."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Which pancreatic enzyme completes starch digestion in the small intestine?",
+    "options": [
+      "Pancreatic amylase",
+      "Pancreatic lipase",
+      "Trypsin",
+      "Chymotrypsin"
+    ],
+    "answer": 0,
+    "explanation": "Pancreatic amylase hydrolyzes starch to maltose and dextrins; brush-border enzymes finish to monosaccharides."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Lacteals in villi primarily absorb:",
+    "options": [
+      "Monosaccharides",
+      "Amino acids",
+      "Chylomicrons (lipids)",
+      "Minerals"
+    ],
+    "answer": 2,
+    "explanation": "Lipids are packaged as chylomicrons and enter lymph via lacteals before the systemic circulation."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Haustral churning is a movement characteristic of the:",
+    "options": [
+      "Duodenum",
+      "Jejunum",
+      "Ileum",
+      "Large intestine"
+    ],
+    "answer": 3,
+    "explanation": "Segmented pouches (haustra) in the colon facilitate mixing and water/electrolyte absorption."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Intrinsic factor is essential for absorption of which vitamin in the ileum?",
+    "options": [
+      "Vitamin A",
+      "Vitamin B6",
+      "Vitamin B12",
+      "Vitamin K"
+    ],
+    "answer": 2,
+    "explanation": "IF-B12 complexes bind specific receptors in the terminal ileum for absorption."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Peyer’s patches (aggregated lymphoid nodules) are most abundant in the:",
+    "options": [
+      "Duodenum",
+      "Jejunum",
+      "Ileum",
+      "Rectum"
+    ],
+    "answer": 2,
+    "explanation": "They provide immune surveillance against intestinal pathogens, especially in the distal small intestine."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "The portal triad at the corners of hepatic lobules consists of branches of the portal vein, hepatic artery, and:",
+    "options": [
+      "Central vein",
+      "Bile ductule",
+      "Hepatic vein",
+      "Lymphatic vessel"
+    ],
+    "answer": 1,
+    "explanation": "The triad is bile ductule + hepatic artery branch + portal vein branch."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "The sphincter of Oddi regulates the flow of:",
+    "options": [
+      "Bile and pancreatic juice into the duodenum",
+      "Chyme into the cecum",
+      "Bile into the gallbladder",
+      "Gastric juice into the esophagus"
+    ],
+    "answer": 0,
+    "explanation": "Also called the hepatopancreatic sphincter, it controls entry at the major duodenal papilla."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Trypsinogen is activated to trypsin in the small intestine by:",
+    "options": [
+      "Pepsin",
+      "Enteropeptidase (enterokinase)",
+      "Carboxypeptidase",
+      "HCl"
+    ],
+    "answer": 1,
+    "explanation": "Brush-border enteropeptidase initiates activation; trypsin then activates other proteases."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "GIP (glucose-dependent insulinotropic peptide) primarily:",
+    "options": [
+      "Stimulates insulin release to oral glucose and slows gastric emptying",
+      "Inhibits insulin release",
+      "Stimulates gallbladder contraction strongly",
+      "Blocks bicarbonate secretion"
+    ],
+    "answer": 0,
+    "explanation": "GIP is an incretin that enhances glucose-dependent insulin secretion and reduces gastric emptying."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "A major function of the large intestine is:",
+    "options": [
+      "Digestion of proteins",
+      "Absorption of most nutrients",
+      "Water/electrolyte absorption and feces formation",
+      "Emulsification of fats"
+    ],
+    "answer": 2,
+    "explanation": "The colon reclaims water/electrolytes and compacts residue into feces."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Glycolysis occurs in the:",
+    "options": [
+      "Mitochondrial matrix",
+      "Cytosol",
+      "Inner mitochondrial membrane",
+      "Peroxisome"
+    ],
+    "answer": 1,
+    "explanation": "The glycolytic pathway is cytosolic and nets 2 ATP per glucose under aerobic conditions."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The final electron acceptor in the electron transport chain is:",
+    "options": [
+      "NAD+",
+      "FAD",
+      "Pyruvate",
+      "Oxygen"
+    ],
+    "answer": 3,
+    "explanation": "Oxygen accepts electrons to form water, enabling continued oxidative phosphorylation."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Beta-oxidation of fatty acids yields:",
+    "options": [
+      "Glucose directly",
+      "Acetyl‑CoA, NADH, and FADH2",
+      "Lactate and pyruvate",
+      "Only glycerol"
+    ],
+    "answer": 1,
+    "explanation": "Each cycle shortens the fatty acid by two carbons, producing acetyl‑CoA and reduced cofactors."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "In the absorptive (fed) state, which hormone predominates?",
+    "options": [
+      "Glucagon",
+      "Insulin",
+      "Epinephrine",
+      "Cortisol"
+    ],
+    "answer": 1,
+    "explanation": "Insulin promotes storage: glycogenesis, lipogenesis, and protein synthesis."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "During fasting, which pathway maintains blood glucose using non‑carbohydrate precursors?",
+    "options": [
+      "Glycogenesis",
+      "Gluconeogenesis",
+      "Lipogenesis",
+      "Pentose phosphate pathway"
+    ],
+    "answer": 1,
+    "explanation": "Liver (and kidney) convert lactate, glycerol, and glucogenic amino acids into glucose."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which is NOT a substrate for gluconeogenesis?",
+    "options": [
+      "Lactate",
+      "Glycerol",
+      "Alanine",
+      "Acetyl‑CoA"
+    ],
+    "answer": 3,
+    "explanation": "Acetyl‑CoA cannot be converted to pyruvate in humans; it enters TCA or ketogenesis."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The citric acid (TCA) cycle occurs in the:",
+    "options": [
+      "Cytosol",
+      "Mitochondrial matrix",
+      "Intermembrane space",
+      "Golgi apparatus"
+    ],
+    "answer": 1,
+    "explanation": "Most TCA enzymes are in the mitochondrial matrix, producing NADH, FADH2, and GTP."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Oxidative phosphorylation depends on a proton gradient across the:",
+    "options": [
+      "Outer mitochondrial membrane",
+      "Inner mitochondrial membrane",
+      "Nuclear envelope",
+      "Lysosomal membrane"
+    ],
+    "answer": 1,
+    "explanation": "The ETC pumps H⁺ across the inner membrane; ATP synthase harvests the gradient."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The Cori cycle transfers which metabolite from muscle to liver for glucose regeneration?",
+    "options": [
+      "Alanine",
+      "Lactate",
+      "Glycerol",
+      "Citrate"
+    ],
+    "answer": 1,
+    "explanation": "Anaerobic glycolysis produces lactate in muscle; the liver converts it back to glucose."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Ketone bodies are produced primarily in the:",
+    "options": [
+      "Renal medulla",
+      "Liver mitochondria",
+      "Adipocytes",
+      "Skeletal muscle"
+    ],
+    "answer": 1,
+    "explanation": "Hepatic mitochondria synthesize acetoacetate and β‑hydroxybutyrate during fasting/diabetes."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which lipoprotein is most associated with reverse cholesterol transport to the liver?",
+    "options": [
+      "Chylomicrons",
+      "VLDL",
+      "LDL",
+      "HDL"
+    ],
+    "answer": 3,
+    "explanation": "HDL removes cholesterol from tissues and returns it to the liver."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Basal metabolic rate is most strongly increased by:",
+    "options": [
+      "Aldosterone",
+      "Thyroid hormones (T3/T4)",
+      "Insulin",
+      "ADH"
+    ],
+    "answer": 1,
+    "explanation": "Thyroid hormones upregulate Na⁺/K⁺ ATPase and mitochondrial proteins to raise energy expenditure."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Insulin receptor activation involves:",
+    "options": [
+      "Gs‑coupled GPCR",
+      "Gq‑coupled GPCR",
+      "Receptor tyrosine kinase signaling",
+      "Ligand‑gated ion channel"
+    ],
+    "answer": 2,
+    "explanation": "Insulin binds a receptor tyrosine kinase, triggering autophosphorylation and PI3K/Akt pathways."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which enzyme catalyzes the rate‑limiting step of glycogen breakdown?",
+    "options": [
+      "Glycogen synthase",
+      "Glycogen phosphorylase",
+      "Phosphofructokinase‑1",
+      "Pyruvate kinase"
+    ],
+    "answer": 1,
+    "explanation": "Glycogen phosphorylase liberates glucose‑1‑phosphate from glycogen."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Uncoupling proteins (e.g., UCP1) increase:",
+    "options": [
+      "ATP yield",
+      "Heat production by dissipating the proton gradient",
+      "ETC inhibition",
+      "Glycogen synthesis"
+    ],
+    "answer": 1,
+    "explanation": "UCPs allow H⁺ to flow without ATP synthesis, generating heat (brown adipose tissue)."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "During prolonged fasting, the brain increasingly uses:",
+    "options": [
+      "Free fatty acids directly",
+      "Ketone bodies",
+      "Lactate",
+      "Fructose"
+    ],
+    "answer": 1,
+    "explanation": "Ketone bodies cross the BBB and partially substitute for glucose."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Essential amino acids are defined as those that:",
+    "options": [
+      "Can be synthesized de novo sufficiently",
+      "Must be obtained from the diet",
+      "Cannot be used for gluconeogenesis",
+      "Are stored long‑term as free amino acids"
+    ],
+    "answer": 1,
+    "explanation": "They cannot be synthesized in adequate amounts and must be supplied by diet."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The urea cycle primarily occurs in the:",
+    "options": [
+      "Kidney",
+      "Liver",
+      "Skeletal muscle",
+      "Adipose tissue"
+    ],
+    "answer": 1,
+    "explanation": "The liver converts toxic ammonia to urea for renal excretion."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which hepatic pathways are upregulated by glucagon?",
+    "options": [
+      "Glycogenesis and lipogenesis",
+      "Gluconeogenesis and glycogenolysis",
+      "Lipogenesis and protein synthesis",
+      "Glycolysis only"
+    ],
+    "answer": 1,
+    "explanation": "Glucagon mobilizes glucose by increasing glycogen breakdown and new glucose production."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Reactive oxygen species (ROS) primarily arise in mitochondria due to:",
+    "options": [
+      "Excess glycogen storage",
+      "Electron leak from the ETC reducing O₂ to superoxide",
+      "High cytosolic NAD⁺",
+      "Inhibited glycolysis"
+    ],
+    "answer": 1,
+    "explanation": "Leakage of electrons from the ETC forms superoxide, driving oxidative stress."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The functional unit of the kidney is the:",
+    "options": [
+      "Nephron",
+      "Glomerulus",
+      "Collecting duct",
+      "Renal papilla"
+    ],
+    "answer": 0,
+    "explanation": "Each nephron filters plasma and modifies tubular fluid to form urine."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Glomerular filtration is driven primarily by:",
+    "options": [
+      "Osmotic pressure of plasma proteins",
+      "Hydrostatic pressure in glomerular capillaries",
+      "Tubular secretion",
+      "Vasa recta flow"
+    ],
+    "answer": 1,
+    "explanation": "High glomerular capillary hydrostatic pressure forces fluid into Bowman’s space."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Podocytes are located in the:",
+    "options": [
+      "Proximal tubule",
+      "Distal tubule",
+      "Visceral layer of Bowman’s capsule",
+      "Ureter"
+    ],
+    "answer": 2,
+    "explanation": "Interdigitating foot processes form filtration slits that restrict macromolecules."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which nephron segments create the countercurrent multiplier?",
+    "options": [
+      "Proximal tubule only",
+      "Loop of Henle with differential permeability",
+      "Distal tubule only",
+      "Collecting duct only"
+    ],
+    "answer": 1,
+    "explanation": "Descending limb is water‑permeable; thick ascending limb reabsorbs solute, creating the gradient."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "ADH increases water reabsorption primarily in:",
+    "options": [
+      "Proximal tubule",
+      "Loop of Henle",
+      "Distal convoluted tubule",
+      "Collecting duct principal cells"
+    ],
+    "answer": 3,
+    "explanation": "ADH via V2 receptors inserts aquaporin‑2 in principal cells, concentrating urine."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Aldosterone acts to:",
+    "options": [
+      "Decrease Na⁺ reabsorption",
+      "Increase Na⁺ reabsorption and K⁺/H⁺ secretion in distal nephron",
+      "Inhibit ENaC channels",
+      "Dilate afferent arteriole"
+    ],
+    "answer": 1,
+    "explanation": "It upregulates ENaC and Na⁺/K⁺ ATPase in principal cells, conserving Na⁺ and water."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Macula densa cells monitor:",
+    "options": [
+      "Glucose in the proximal tubule",
+      "NaCl in the distal tubule",
+      "Urea in the collecting duct",
+      "pH in the loop of Henle"
+    ],
+    "answer": 1,
+    "explanation": "They sense NaCl delivery and adjust afferent tone/renin release (tubuloglomerular feedback)."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The correct RAAS sequence is:",
+    "options": [
+      "Renin → Angiotensin I → ACE → Angiotensin II → Aldosterone",
+      "ACE → Renin → Angiotensin II → Angiotensin I → Aldosterone",
+      "Angiotensin II → ACE → Renin → Aldosterone",
+      "Renin → ACE → Angiotensin II → Angiotensin I → Aldosterone"
+    ],
+    "answer": 0,
+    "explanation": "Renin cleaves angiotensinogen to angiotensin I; ACE converts it to angiotensin II, which stimulates aldosterone."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "In the kidney, parathyroid hormone (PTH):",
+    "options": [
+      "Decreases Ca²⁺ reabsorption",
+      "Increases phosphate reabsorption",
+      "Increases Ca²⁺ reabsorption and decreases phosphate reabsorption",
+      "Has no effect"
+    ],
+    "answer": 2,
+    "explanation": "PTH raises serum Ca²⁺ and promotes phosphaturia; it also increases calcitriol synthesis."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Erythropoietin (EPO) is produced mainly by:",
+    "options": [
+      "Glomerular cells",
+      "Interstitial fibroblast‑like cells in renal cortex",
+      "Adrenal medulla",
+      "Hepatocytes only"
+    ],
+    "answer": 1,
+    "explanation": "Renal interstitial cells sense hypoxia and secrete EPO to stimulate erythropoiesis."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Creatinine clearance approximates:",
+    "options": [
+      "Renal plasma flow",
+      "Glomerular filtration rate (GFR)",
+      "Tubular reabsorption rate",
+      "Medullary osmotic gradient"
+    ],
+    "answer": 1,
+    "explanation": "Creatinine is freely filtered and minimally reabsorbed; its clearance estimates GFR."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Glucosuria occurs when filtered glucose exceeds the proximal tubule's:",
+    "options": [
+      "Renal plasma flow",
+      "Transport maximum (Tm)",
+      "Filtration fraction",
+      "Threshold for bicarbonate"
+    ],
+    "answer": 1,
+    "explanation": "When glucose surpasses SGLT transport capacity (Tm), it appears in urine."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Strong sympathetic activation typically:",
+    "options": [
+      "Dilates afferent arteriole and increases GFR",
+      "Constricts renal arterioles and decreases GFR",
+      "Has no renal effect",
+      "Inhibits renin release"
+    ],
+    "answer": 1,
+    "explanation": "Sympathetic tone reduces RBF and GFR and promotes renin release from JG cells."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The kidneys regulate acid‑base balance by:",
+    "options": [
+      "Excreting bicarbonate and reabsorbing H⁺",
+      "Excreting H⁺ and reabsorbing bicarbonate",
+      "Only excreting organic acids",
+      "Only using phosphate buffering"
+    ],
+    "answer": 1,
+    "explanation": "Tubular cells secrete H⁺, reclaim bicarbonate, and generate new bicarbonate via ammoniagenesis."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The micturition reflex involves which primary efferent pathway?",
+    "options": [
+      "Sympathetic (T10–L2) detrusor contraction",
+      "Parasympathetic (S2–S4) detrusor contraction",
+      "Somatic activation of internal sphincter",
+      "Only cortical control"
+    ],
+    "answer": 1,
+    "explanation": "Parasympathetic efferents contract detrusor and relax the internal sphincter during voiding."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which epithelium lines the renal pelvis, ureters, and bladder?",
+    "options": [
+      "Simple squamous",
+      "Simple cuboidal",
+      "Transitional (urothelium)",
+      "Stratified columnar"
+    ],
+    "answer": 2,
+    "explanation": "Transitional epithelium allows stretch while maintaining a barrier."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Normal urine typically has which property?",
+    "options": [
+      "High protein content",
+      "Specific gravity ~1.005–1.030 with minimal protein",
+      "Glucose present after meals",
+      "Bright red coloration"
+    ],
+    "answer": 1,
+    "explanation": "Normal urine has little/no protein or glucose; specific gravity reflects hydration and solute load."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which nephron type is most important for concentrating urine?",
+    "options": [
+      "Cortical nephrons",
+      "Juxtamedullary nephrons",
+      "Subcapsular nephrons",
+      "Papillary nephrons"
+    ],
+    "answer": 1,
+    "explanation": "Juxtamedullary nephrons have long loops that generate a strong medullary gradient."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which arteriole supplies blood to the glomerulus?",
+    "options": [
+      "Afferent arteriole",
+      "Efferent arteriole",
+      "Interlobular artery",
+      "Vasa recta"
+    ],
+    "answer": 0,
+    "explanation": "The afferent arteriole delivers blood into glomerular capillaries; efferent drains them."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Aquaporin‑2 channels are inserted into which cells under ADH influence?",
+    "options": [
+      "Proximal tubule cells",
+      "Collecting duct principal cells",
+      "Intercalated cells",
+      "Thick ascending limb cells"
+    ],
+    "answer": 1,
+    "explanation": "ADH via V2 receptors increases aquaporin‑2 in principal cells to reabsorb water."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which pituitary hormone stimulates the thyroid to produce T3/T4?",
+    "options": [
+      "TRH",
+      "TSH",
+      "ACTH",
+      "GH"
+    ],
+    "answer": 1,
+    "explanation": "TSH from the anterior pituitary stimulates thyroid follicular cells to synthesize and release T3/T4."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which hypothalamic factor tonically inhibits prolactin release?",
+    "options": [
+      "CRH",
+      "GnRH",
+      "Dopamine",
+      "Somatostatin"
+    ],
+    "answer": 2,
+    "explanation": "Dopamine (prolactin‑inhibiting hormone) suppresses prolactin secretion from lactotrophs."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "ACTH primarily stimulates which adrenal zone and product?",
+    "options": [
+      "Zona glomerulosa → Aldosterone",
+      "Zona fasciculata → Cortisol",
+      "Zona reticularis → Aldosterone",
+      "Adrenal medulla → Cortisol"
+    ],
+    "answer": 1,
+    "explanation": "ACTH drives cortisol production in the zona fasciculata; aldosterone is mainly regulated by angiotensin II and K⁺."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Thyroid hormones (T3/T4) act mainly by:",
+    "options": [
+      "Binding cell‑surface GPCRs",
+      "Regulating nuclear gene transcription",
+      "Opening ligand‑gated channels",
+      "Activating cAMP at the membrane"
+    ],
+    "answer": 1,
+    "explanation": "Lipophilic thyroid hormones enter cells and bind nuclear receptors to alter gene expression."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which pairing of hormone class and receptor is CORRECT?",
+    "options": [
+      "Steroid hormones → membrane GPCRs",
+      "Peptide hormones → intracellular nuclear receptors",
+      "Catecholamines → membrane receptors (GPCRs/RTKs)",
+      "Thyroid hormones → cytosolic GPCRs"
+    ],
+    "answer": 2,
+    "explanation": "Catecholamines act via cell‑surface receptors; steroids/thyroid hormones act via intracellular receptors."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "PTH increases serum Ca²⁺ by all of the following EXCEPT:",
+    "options": [
+      "Stimulating osteoclast activity via osteoblast signaling",
+      "Increasing renal Ca²⁺ reabsorption",
+      "Decreasing intestinal Ca²⁺ absorption",
+      "Increasing 1‑α hydroxylase activity to raise calcitriol"
+    ],
+    "answer": 2,
+    "explanation": "PTH increases calcitriol, which enhances intestinal Ca²⁺ absorption; it does not decrease it."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Calcitonin is secreted by thyroid parafollicular (C) cells and:",
+    "options": [
+      "Strongly increases osteoclast activity",
+      "Has modest effects to reduce bone resorption",
+      "Raises blood glucose",
+      "Directly increases aldosterone"
+    ],
+    "answer": 1,
+    "explanation": "Calcitonin modestly inhibits osteoclasts, lowering Ca²⁺; its physiologic role in adults is limited."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Insulin and glucagon are secreted by which pancreatic islet cells?",
+    "options": [
+      "α cells and β cells",
+      "β cells and α cells",
+      "δ cells and PP cells",
+      "G cells and D cells"
+    ],
+    "answer": 1,
+    "explanation": "β cells secrete insulin; α cells secrete glucagon."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Cortisol’s metabolic effects include:",
+    "options": [
+      "Decreased gluconeogenesis",
+      "Increased gluconeogenesis and lipolysis",
+      "Increased muscle protein synthesis",
+      "Enhanced insulin sensitivity"
+    ],
+    "answer": 1,
+    "explanation": "Cortisol mobilizes fuels and is anti‑inflammatory and immunosuppressive."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Aldosterone primarily:",
+    "options": [
+      "Promotes Na⁺ reabsorption and K⁺/H⁺ secretion in the distal nephron",
+      "Promotes K⁺ reabsorption",
+      "Decreases water reabsorption",
+      "Raises serum calcium"
+    ],
+    "answer": 0,
+    "explanation": "It upregulates ENaC and Na⁺/K⁺ ATPase, retaining Na⁺/water and excreting K⁺/H⁺."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Epinephrine is released from the adrenal medulla in response to:",
+    "options": [
+      "ACTH",
+      "Sympathetic preganglionic fibers (ACh)",
+      "TSH",
+      "CRH"
+    ],
+    "answer": 1,
+    "explanation": "Preganglionic sympathetic neurons synapse on chromaffin cells to trigger catecholamine release."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Growth hormone (GH) stimulates linear growth primarily via:",
+    "options": [
+      "Direct action on bones only",
+      "IGF‑1 produced mainly by the liver",
+      "Insulin secretion",
+      "Aldosterone release"
+    ],
+    "answer": 1,
+    "explanation": "GH induces hepatic IGF‑1, which drives chondrocyte proliferation at growth plates."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Prolactin’s principal function is:",
+    "options": [
+      "Milk ejection",
+      "Milk production (lactogenesis)",
+      "Ovulation",
+      "Uterine contraction"
+    ],
+    "answer": 1,
+    "explanation": "Prolactin stimulates milk synthesis; oxytocin causes milk let‑down and uterine contractions."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Oxytocin is best known for:",
+    "options": [
+      "Raising blood glucose",
+      "Stimulating cortisol release",
+      "Uterine contraction and milk ejection",
+      "Inhibiting GH"
+    ],
+    "answer": 2,
+    "explanation": "Oxytocin triggers uterine contractions during labor and milk let‑down postpartum."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "ADH increases water reabsorption via which renal receptors?",
+    "options": [
+      "V1",
+      "V2",
+      "AT1",
+      "ENaC"
+    ],
+    "answer": 1,
+    "explanation": "ADH binds V2 receptors on collecting duct principal cells to insert aquaporin‑2 channels."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Melatonin from the pineal gland is primarily regulated by:",
+    "options": [
+      "Feeding state",
+      "Light exposure via the suprachiasmatic nucleus",
+      "ACTH levels",
+      "Gastrin release"
+    ],
+    "answer": 1,
+    "explanation": "Light input to the SCN suppresses pineal melatonin; darkness promotes its secretion."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Thymosins produced by the thymus are important for:",
+    "options": [
+      "B‑cell class switching",
+      "T‑lymphocyte maturation",
+      "Erythrocyte production",
+      "Platelet activation"
+    ],
+    "answer": 1,
+    "explanation": "Thymic hormones support T‑cell development in the thymus."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Atrial natriuretic peptide (ANP) is released with atrial stretch and:",
+    "options": [
+      "Stimulates renin and aldosterone",
+      "Promotes natriuresis and vasodilation, opposing RAAS",
+      "Raises vasoconstriction and water retention",
+      "Increases ADH secretion"
+    ],
+    "answer": 1,
+    "explanation": "ANP increases GFR, inhibits renin/aldosterone, and promotes Na⁺/water excretion."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Erythropoietin (EPO) is best described as a hormone produced mainly by the kidney that:",
+    "options": [
+      "Decreases RBC production",
+      "Stimulates erythropoiesis in bone marrow",
+      "Raises plasma osmolarity directly",
+      "Inhibits tissue oxygen delivery"
+    ],
+    "answer": 1,
+    "explanation": "EPO increases RBC production in response to hypoxia, improving oxygen-carrying capacity."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which anterior pituitary hormones are the gonadotropins?",
+    "options": [
+      "FSH and LH",
+      "TSH and ACTH",
+      "GH and PRL",
+      "MSH and ACTH"
+    ],
+    "answer": 0,
+    "explanation": "FSH and LH regulate gametogenesis and sex steroid production."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "The primary physiological stimulus for ADH release is an increase in:",
+    "options": [
+      "Plasma volume",
+      "Plasma osmolality",
+      "Plasma glucose",
+      "Plasma calcium"
+    ],
+    "answer": 1,
+    "explanation": "Osmoreceptors sense increased plasma osmolality and stimulate ADH; large hypovolemia also triggers ADH via baroreceptors."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "ADH acts on V1 and V2 receptors to cause which effects, respectively?",
+    "options": [
+      "Renal water reabsorption; vasoconstriction",
+      "Vasoconstriction; renal water reabsorption",
+      "Aldosterone secretion; vasodilation",
+      "Bradycardia; diuresis"
+    ],
+    "answer": 1,
+    "explanation": "V1 (vascular) mediates vasoconstriction; V2 (renal) increases aquaporin‑2 insertion in collecting duct principal cells."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Desmopressin (DDAVP) is most effective for which condition?",
+    "options": [
+      "Nephrogenic diabetes insipidus",
+      "Central diabetes insipidus",
+      "SIADH",
+      "Primary polydipsia"
+    ],
+    "answer": 1,
+    "explanation": "Desmopressin is a V2‑selective ADH analog effective in central DI (ADH deficiency), not nephrogenic DI (renal resistance)."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Syndrome of inappropriate ADH (SIADH) typically presents with:",
+    "options": [
+      "Hypernatremia and dilute urine",
+      "Hyponatremia and concentrated urine",
+      "Normal sodium and dilute urine",
+      "Hyperkalemia and polyuria"
+    ],
+    "answer": 1,
+    "explanation": "Excess ADH causes water retention, hyponatremia, low plasma osmolality, and inappropriately concentrated urine."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Thyroid hormone synthesis requires which enzyme for organification and coupling of iodotyrosines?",
+    "options": [
+      "5′‑deiodinase",
+      "Thyroid peroxidase (TPO)",
+      "Dopamine β‑hydroxylase",
+      "Aromatase"
+    ],
+    "answer": 1,
+    "explanation": "TPO catalyzes iodide oxidation, organification of tyrosyl residues on thyroglobulin, and coupling to form T3/T4."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Graves disease features which pathogenic mechanism?",
+    "options": [
+      "TSH‑receptor–blocking antibodies",
+      "TSH‑receptor–stimulating antibodies (IgG)",
+      "Anti‑TPO antibodies causing hypothyroidism only",
+      "TSH‑secreting pituitary adenoma"
+    ],
+    "answer": 1,
+    "explanation": "TSI (thyroid‑stimulating immunoglobulins) activate the TSH receptor, increasing thyroid hormone and lowering TSH."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which statement best describes the actions of calcitriol (1,25‑dihydroxyvitamin D)?",
+    "options": [
+      "Decreases intestinal Ca²⁺ and phosphate absorption",
+      "Increases intestinal Ca²⁺ and phosphate absorption",
+      "Increases renal phosphate reabsorption",
+      "Decreases bone mineralization only"
+    ],
+    "answer": 1,
+    "explanation": "Calcitriol enhances intestinal absorption of Ca²⁺ and phosphate and, with PTH, supports bone remodeling."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which combination of effects is characteristic of growth hormone (GH)?",
+    "options": [
+      "Decreases lipolysis; increases insulin sensitivity",
+      "Increases lipolysis; antagonizes insulin",
+      "Decreases protein synthesis; decreases IGF‑1",
+      "Increases glucose uptake by muscle and fat"
+    ],
+    "answer": 1,
+    "explanation": "GH is diabetogenic: increases lipolysis and reduces insulin sensitivity; many growth effects are via IGF‑1."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "IGF‑1 is produced mainly by the liver in response to GH and exerts:",
+    "options": [
+      "Paracrine only, no endocrine effects",
+      "Endocrine and paracrine effects promoting growth of bone and cartilage",
+      "Only inhibitory effects on GH",
+      "Primarily increases aldosterone"
+    ],
+    "answer": 1,
+    "explanation": "IGF‑1 mediates many growth‑promoting actions (epiphyseal plate chondrocytes) and negatively feeds back on GH."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Hyperprolactinemia commonly causes:",
+    "options": [
+      "Increased GnRH and fertility",
+      "Decreased GnRH leading to hypogonadism",
+      "Hyperthyroidism",
+      "Hypercortisolism"
+    ],
+    "answer": 1,
+    "explanation": "Elevated prolactin suppresses GnRH, causing decreased LH/FSH, menstrual irregularities, and infertility."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "In the ovarian follicle, the two‑cell, two‑gonadotropin model states that:",
+    "options": [
+      "Granulosa cells make androgens via LH; theca cells aromatize via FSH",
+      "Theca cells make androgens via LH; granulosa cells aromatize to estrogens via FSH",
+      "Both theca and granulosa make progesterone only",
+      "FSH acts only on theca cells"
+    ],
+    "answer": 1,
+    "explanation": "LH stimulates theca cells to produce androgens; FSH induces granulosa aromatase to convert androgens to estrogens."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "In males, which hormones and cells are correctly paired?",
+    "options": [
+      "LH → Sertoli cells (testosterone)",
+      "FSH → Leydig cells (inhibin B)",
+      "LH → Leydig cells (testosterone)",
+      "FSH → Leydig cells (estradiol)"
+    ],
+    "answer": 2,
+    "explanation": "LH stimulates Leydig cells to produce testosterone; FSH acts on Sertoli cells to support spermatogenesis and secrete inhibin B."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which statement about aldosterone regulation is TRUE?",
+    "options": [
+      "Primarily controlled by ACTH pulsatility",
+      "Primarily controlled by angiotensin II and plasma K⁺",
+      "Inhibited by low serum K⁺ and low angiotensin II",
+      "Unaffected by RAAS"
+    ],
+    "answer": 1,
+    "explanation": "Aldosterone secretion is most sensitive to angiotensin II and hyperkalemia; ACTH has a minor permissive role."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "The adrenal medulla predominantly secretes epinephrine because cortisol from the cortex induces:",
+    "options": [
+      "Phenylethanolamine N‑methyltransferase (PNMT) in chromaffin cells",
+      "Tyrosine hydroxylase in zona glomerulosa",
+      "Aromatase in chromaffin cells",
+      "DOPA decarboxylase in the zona reticularis"
+    ],
+    "answer": 0,
+    "explanation": "Cortisol induces PNMT in medullary chromaffin cells, converting norepinephrine to epinephrine."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Somatostatin, secreted by pancreatic δ‑cells, primarily:",
+    "options": [
+      "Stimulates insulin and glucagon release",
+      "Inhibits insulin, glucagon, and many GI hormones",
+      "Raises gastric acid secretion",
+      "Increases gallbladder contraction"
+    ],
+    "answer": 1,
+    "explanation": "Somatostatin is broadly inhibitory—reducing endocrine and exocrine GI secretions (the 'brake' hormone)."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "GLP‑1 (glucagon‑like peptide‑1) from intestinal L‑cells:",
+    "options": [
+      "Decreases insulin secretion",
+      "Stimulates insulin and inhibits glucagon in a glucose‑dependent manner",
+      "Increases gastric emptying",
+      "Raises plasma glucose directly"
+    ],
+    "answer": 1,
+    "explanation": "GLP‑1 is an incretin: enhances insulin, suppresses glucagon, and slows gastric emptying."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Atrial natriuretic peptide (ANP) promotes natriuresis primarily by:",
+    "options": [
+      "Constricting afferent arteriole and relaxing efferent arteriole",
+      "Dilating afferent arteriole and constricting efferent arteriole",
+      "Increasing renin release",
+      "Increasing aldosterone secretion"
+    ],
+    "answer": 1,
+    "explanation": "ANP dilates the afferent and constricts the efferent arteriole, increasing GFR; it also suppresses renin/aldosterone."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Renin is secreted by juxtaglomerular cells in response to all EXCEPT:",
+    "options": [
+      "Decreased renal perfusion pressure",
+      "Decreased NaCl at the macula densa",
+      "Increased sympathetic (β1) stimulation",
+      "Hyperkalemia"
+    ],
+    "answer": 3,
+    "explanation": "Hyperkalemia stimulates aldosterone directly, not renin. Renin is released with low perfusion/NaCl or β1 activation."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which pairing of hormone and second messenger pathway is CORRECT?",
+    "options": [
+      "PTH → cAMP/PKA via Gs",
+      "Insulin → cAMP/PKA",
+      "Vasoconstrictive V1 (ADH) → cGMP",
+      "ANP → IP3/DAG"
+    ],
+    "answer": 0,
+    "explanation": "PTH activates Gs to increase cAMP; insulin uses a receptor tyrosine kinase; ANP signals via cGMP; V1 uses IP3/DAG (Gq)."
+  },
+  {
+    "topic": "Endocrine System",
+    "stem": "Which hormone is primarily responsible for the luteinizing surge that triggers ovulation?",
+    "options": [
+      "FSH",
+      "LH",
+      "Prolactin",
+      "Progesterone"
+    ],
+    "answer": 1,
+    "explanation": "A mid‑cycle surge of LH, driven by rising estrogen positive feedback, induces ovulation."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Clearance of which substance is considered the best experimental measure of GFR because it is freely filtered and neither reabsorbed nor secreted?",
+    "options": [
+      "Creatinine",
+      "Para-aminohippurate (PAH)",
+      "Inulin",
+      "Urea"
+    ],
+    "answer": 2,
+    "explanation": "Inulin is the gold standard for GFR: freely filtered, not reabsorbed, secreted, or metabolized."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Clearance of PAH (at low plasma concentrations) approximates which renal parameter?",
+    "options": [
+      "Glomerular filtration rate (GFR)",
+      "Renal plasma flow (RPF)",
+      "Renal blood flow (RBF)",
+      "Filtration fraction (FF)"
+    ],
+    "answer": 1,
+    "explanation": "PAH is filtered and avidly secreted; nearly all PAH entering the kidney is cleared in one pass, approximating RPF."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "An increase in NaCl delivery to the macula densa elicits which autoregulatory response?",
+    "options": [
+      "Afferent arteriole dilation to raise GFR",
+      "Afferent arteriole constriction to lower GFR",
+      "Efferent arteriole constriction to raise GFR",
+      "Increased renin release"
+    ],
+    "answer": 1,
+    "explanation": "Tubuloglomerular feedback causes afferent constriction when macula densa senses high NaCl, reducing GFR."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Moderate efferent arteriolar constriction (without large changes in renal plasma flow) tends to:",
+    "options": [
+      "Decrease GFR and decrease filtration fraction",
+      "Increase GFR and increase filtration fraction",
+      "Increase GFR and decrease filtration fraction",
+      "Decrease GFR and increase filtration fraction"
+    ],
+    "answer": 1,
+    "explanation": "Moderate efferent constriction raises glomerular capillary pressure, increasing GFR and FF; severe constriction can lower GFR."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which nephron segment is water-impermeable and reabsorbs Na⁺, K⁺, and 2Cl⁻ via NKCC2 (target of loop diuretics)?",
+    "options": [
+      "Proximal convoluted tubule",
+      "Thin descending limb",
+      "Thick ascending limb",
+      "Distal convoluted tubule"
+    ],
+    "answer": 2,
+    "explanation": "The thick ascending limb is a major diluting segment; furosemide and other loop diuretics inhibit NKCC2 here."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Type A (α) intercalated cells in the collecting duct primarily:",
+    "options": [
+      "Secrete HCO₃⁻ and reabsorb H⁺",
+      "Secrete H⁺ and reabsorb HCO₃⁻",
+      "Secrete K⁺ and reabsorb Na⁺",
+      "Secrete water via aquaporin-2"
+    ],
+    "answer": 1,
+    "explanation": "Type A intercalated cells acidify urine by secreting H⁺ (H⁺-ATPase/H⁺-K⁺ ATPase) and reabsorbing bicarbonate."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Carbonic anhydrase inhibitors (e.g., acetazolamide) act primarily in which nephron segment to cause alkaline urine and metabolic acidosis?",
+    "options": [
+      "Proximal tubule",
+      "Thick ascending limb",
+      "Distal convoluted tubule",
+      "Inner medullary collecting duct"
+    ],
+    "answer": 0,
+    "explanation": "They reduce proximal H⁺ secretion and HCO₃⁻ reabsorption, causing bicarbonaturia and alkaline urine."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Thiazide diuretics inhibit which transporter and have what effect on calcium handling?",
+    "options": [
+      "NKCC2 in TAL; decrease Ca²⁺ reabsorption",
+      "NCC in DCT; increase Ca²⁺ reabsorption",
+      "ENaC in collecting duct; increase Ca²⁺ excretion",
+      "SGLT2 in PCT; no effect on Ca²⁺"
+    ],
+    "answer": 1,
+    "explanation": "Thiazides block the Na⁺-Cl⁻ cotransporter (NCC) in DCT and enhance Ca²⁺ reabsorption, useful in calcium stones."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Amiloride and triamterene reduce K⁺ wasting primarily by:",
+    "options": [
+      "Inhibiting Na⁺-K⁺-2Cl⁻ cotransporter",
+      "Blocking ENaC in collecting duct principal cells",
+      "Blocking Na⁺-Cl⁻ cotransporter in DCT",
+      "Inhibiting carbonic anhydrase"
+    ],
+    "answer": 1,
+    "explanation": "They are K⁺-sparing diuretics that block ENaC, reducing lumen negativity and K⁺ secretion."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Mannitol, an osmotic diuretic, promotes diuresis by:",
+    "options": [
+      "Inhibiting NCC in DCT",
+      "Increasing tubular fluid osmolarity, reducing water reabsorption",
+      "Blocking aldosterone receptors",
+      "Inhibiting urea transporters"
+    ],
+    "answer": 1,
+    "explanation": "Osmotic agents hold water in the tubular lumen (notably in PCT and descending limb), increasing urine flow."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The vasa recta primarily function to:",
+    "options": [
+      "Generate the corticomedullary gradient",
+      "Prevent washout of the medullary gradient via countercurrent exchange",
+      "Reabsorb glucose in the cortex",
+      "Secrete PAH into the lumen"
+    ],
+    "answer": 1,
+    "explanation": "Slow blood flow and countercurrent exchange preserve the hyperosmotic medulla established by loops of Henle and urea."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Under ADH influence, urea permeability of the inner medullary collecting duct (IMCD) increases, which:",
+    "options": [
+      "Decreases medullary osmolality and impairs concentration",
+      "Enhances medullary osmolality via urea recycling to concentrate urine",
+      "Only affects sodium reabsorption",
+      "Has no physiologic effect"
+    ],
+    "answer": 1,
+    "explanation": "ADH upregulates urea transporters (e.g., UT-A1/UT-A3), augmenting medullary osmolality and water reabsorption."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "A negative free water clearance (Cᵥ) indicates that the kidney is:",
+    "options": [
+      "Producing dilute urine without ADH",
+      "Producing urine more concentrated than plasma (ADH effect)",
+      "Excreting pure water",
+      "In renal failure"
+    ],
+    "answer": 1,
+    "explanation": "Negative free water clearance reflects water reabsorption in excess of solute—concentrated urine, typically with ADH."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "A fractional excretion of sodium (FENa) < 1% most commonly suggests:",
+    "options": [
+      "Intrinsic tubular injury (ATN)",
+      "Postrenal obstruction",
+      "Prerenal azotemia with sodium avidity",
+      "SIADH"
+    ],
+    "answer": 2,
+    "explanation": "Low FENa indicates intact tubular sodium reabsorption, typical of prerenal states; >2% suggests intrinsic renal loss."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Glucose reabsorption in the early proximal tubule is mediated primarily by:",
+    "options": [
+      "GLUT2 on the apical membrane",
+      "SGLT2 coupled to Na⁺ on the apical membrane",
+      "ENaC channels",
+      "NCC cotransport"
+    ],
+    "answer": 1,
+    "explanation": "SGLT2 (apical) reabsorbs glucose with Na⁺; glucose exits basolaterally via GLUT2 to the interstitium."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "The majority (~65%) of filtered water is reabsorbed in which nephron segment and isosmotically with solute?",
+    "options": [
+      "Distal convoluted tubule",
+      "Proximal convoluted tubule",
+      "Thick ascending limb",
+      "Collecting duct"
+    ],
+    "answer": 1,
+    "explanation": "The proximal tubule reabsorbs most water and solute isosmotically via aquaporins and paracellular pathways."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Compared with inulin clearance, creatinine clearance:",
+    "options": [
+      "Underestimates GFR due to tubular reabsorption",
+      "Slightly overestimates GFR due to tubular secretion",
+      "Equals GFR exactly",
+      "Is not used clinically"
+    ],
+    "answer": 1,
+    "explanation": "Creatinine is slightly secreted by tubules, hence its clearance modestly overestimates true GFR."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "ACE inhibitors most directly affect glomerular hemodynamics by:",
+    "options": [
+      "Constricting the afferent arteriole to lower GFR",
+      "Dilating the efferent arteriole to lower intraglomerular pressure and GFR",
+      "Dilating the afferent arteriole to raise GFR",
+      "Constricting both arterioles equally"
+    ],
+    "answer": 1,
+    "explanation": "Blocking angiotensin II dilates the efferent arteriole, lowering intraglomerular pressure and GFR—caution in renal artery stenosis."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Which finding best distinguishes nephrogenic from central diabetes insipidus after desmopressin administration?",
+    "options": [
+      "Marked increase in urine osmolality (concentration)",
+      "No change or minimal change in urine osmolality",
+      "Profound hyponatremia develops",
+      "Polyuria resolves immediately in both"
+    ],
+    "answer": 1,
+    "explanation": "In nephrogenic DI, kidneys are unresponsive to ADH/Desmopressin; urine remains dilute."
+  },
+  {
+    "topic": "Urinary System",
+    "stem": "Urinary casts: which association is most accurate?",
+    "options": [
+      "Red blood cell casts → glomerulonephritis",
+      "White blood cell casts → prerenal azotemia",
+      "Granular ('muddy brown') casts → normal finding",
+      "Hyaline casts → always pathological"
+    ],
+    "answer": 0,
+    "explanation": "RBC casts are classic for glomerulonephritis; WBC casts suggest pyelonephritis/interstitial nephritis; muddy brown casts suggest ATN; hyaline casts can be normal."
+  }
+];
+
+function renderQuiz() {
+  const root = document.getElementById('quiz');
+  root.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'q' + (i+1);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `<span class="tag">${q.topic}</span> &nbsp; • &nbsp; Question ${i+1} of ${QUESTIONS.length}`;
+    card.appendChild(meta);
+
+    const stem = document.createElement('div');
+    stem.className = 'stem';
+    stem.textContent = q.stem;
+    card.appendChild(stem);
+
+    const list = document.createElement('ul');
+    list.className = 'options';
+
+    q.options.forEach((opt, idx) => {
+      const li = document.createElement('li');
+      li.className = 'option';
+      li.dataset.correct = (idx === q.answer) ? '1' : '0';
+
+      const label = document.createElement('label');
+      label.style.display = 'flex';
+      label.style.gap = '.6rem';
+      label.style.alignItems = 'flex-start';
+      label.style.cursor = 'pointer';
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + i;
+      input.value = idx;
+      input.setAttribute('aria-describedby', `fb${i}`);
+
+      input.addEventListener('change', () => {
+        list.querySelectorAll('.option').forEach(op => op.classList.remove('correct','incorrect'));
+        const isCorrect = (idx === q.answer);
+        li.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+        const fb = card.querySelector('.feedback');
+        const letter = ['A','B','C','D'][q.answer];
+        fb.innerHTML = isCorrect
+          ? `<span class="ok">Correct.</span> ${q.explanation}`
+          : `<span class="bad">Incorrect.</span> Correct answer: <strong>${letter}. ${q.options[q.answer]}</strong>. ${q.explanation}`;
+      });
+
+      const choiceText = document.createElement('div');
+      choiceText.innerHTML = `<strong>${String.fromCharCode(65+idx)}.</strong> ${opt}`;
+
+      label.appendChild(input);
+      label.appendChild(choiceText);
+      li.appendChild(label);
+      list.appendChild(li);
+    });
+
+    card.appendChild(list);
+
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    fb.id = 'fb' + i;
+    fb.setAttribute('aria-live', 'polite');
+    fb.textContent = ' ';
+    card.appendChild(fb);
+
+    root.appendChild(card);
+  });
+}
+
+function computeScore() {
+  let correct = 0;
+  QUESTIONS.forEach((q, i) => {
+    const checked = document.querySelector(`input[name="q${i}"]:checked`);
+    if (checked && Number(checked.value) === q.answer) correct++;
+  });
+  document.getElementById('scoreBox').textContent = `Score: ${correct} / ${QUESTIONS.length} (${Math.round(100*correct/QUESTIONS.length)}%)`;
+
+  for (let i=0;i<QUESTIONS.length;i++) {
+    if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+      document.getElementById('q'+(i+1)).scrollIntoView({behavior:'smooth', block:'start'});
+      break;
+    }
+  }
+}
+
+function resetQuiz() {
+  document.querySelectorAll('input[type="radio"]').forEach(i => i.checked = false);
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('correct','incorrect'));
+  document.querySelectorAll('.feedback').forEach(fb => fb.textContent = ' ');
+  document.getElementById('scoreBox').textContent = 'Score: — / ' + QUESTIONS.length;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuiz();
+  resetQuiz();
+  document.getElementById('submitBtn').addEventListener('click', computeScore);
+  document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js', {scope: './'}).catch(function(e){console.log('SW registration failed:', e);});
+  });
+}
+</script>
+
+</body>
+</html>
