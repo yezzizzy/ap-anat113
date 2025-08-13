@@ -4,7 +4,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Anatomy & Physiology 120Q Online Quiz</title>
+<title>Anatomy & Physiology 140Q Online Quiz</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
   :root {
     --bg: #f9fafb;
@@ -17,28 +22,16 @@
     --border: #e5e7eb;
   }
   * { box-sizing: border-box; }
-  body {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    margin: 0; padding: 0; color: var(--ink); background: var(--bg);
-  }
-  header {
-    position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border);
-    z-index: 10;
-  }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: var(--ink); background: var(--bg); }
+  header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); z-index: 10; }
   .wrap { max-width: 1000px; margin: 0 auto; padding: 1rem; }
   h1 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); margin: 0.2rem 0; }
   .controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: .5rem; }
-  button {
-    border: 1px solid var(--border); background: var(--accent); color: #fff;
-    padding: .6rem .9rem; border-radius: .6rem; cursor: pointer; font-weight: 600;
-  }
+  button { border: 1px solid var(--border); background: var(--accent); color: #fff; padding: .6rem .9rem; border-radius: .6rem; cursor: pointer; font-weight: 600; }
   button.secondary { background: #fff; color: var(--ink); }
   #scoreBox { font-weight: 700; margin-left: auto; }
   main .wrap { display: grid; gap: 1rem; }
-  .card {
-    background: var(--card); border: 1px solid var(--border); border-radius: .8rem;
-    padding: 1rem;
-  }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: .8rem; padding: 1rem; }
   .meta { font-size: .9rem; color: var(--muted); margin-bottom: .25rem; }
   .stem { margin: .3rem 0 .7rem 0; font-weight: 600; }
   .options { list-style: none; padding: 0; margin: 0; display: grid; gap: .4rem; }
@@ -49,25 +42,13 @@
   .feedback .ok { color: var(--ok); font-weight: 700; }
   .feedback .bad { color: var(--bad); font-weight: 700; }
   .tag { display:inline-block; padding:.15rem .5rem; border-radius:.5rem; background:#eef2ff; color:#3730a3; font-size:.75rem; font-weight:700; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
-  @media print {
-    header, #scoreBox, .controls button { display:none !important; }
-    body { background: #fff; }
-    .card { break-inside: avoid; }
-  }
+  @media (max-width: 480px) { .wrap { padding: .8rem; } .card { padding: .8rem; } }
 </style>
-
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2563eb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>120-Item MCQ • Digestive System • Metabolism • Urinary System • Endocrine (Major Hormones)</h1>
+    <h1>140-Item MCQ • Digestive • Metabolism • Urinary • Endocrine</h1>
     <div class="controls">
       <button id="submitBtn" title="Calculate your score">Submit &amp; Score</button>
       <button id="resetBtn" class="secondary" title="Clear all answers and feedback">Reset</button>
@@ -1521,6 +1502,246 @@ const QUESTIONS = [
     ],
     "answer": 0,
     "explanation": "RBC casts are classic for glomerulonephritis; WBC casts suggest pyelonephritis/interstitial nephritis; muddy brown casts suggest ATN; hyaline casts can be normal."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Which phase of swallowing is under voluntary control?",
+    "options": [
+      "Pharyngeal phase",
+      "Esophageal phase",
+      "Oral (buccal) phase",
+      "Gastroesophageal phase"
+    ],
+    "answer": 2,
+    "explanation": "The oral phase is voluntary; the pharyngeal and esophageal phases are reflexively coordinated."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Elevation of the soft palate to prevent nasopharyngeal regurgitation during swallowing is mainly mediated by:",
+    "options": [
+      "Palatoglossus innervated by XII",
+      "Tensor veli palatini (V3) only",
+      "Levator veli palatini (CN X) and tensor veli palatini (V3)",
+      "Stylopharyngeus (IX)"
+    ],
+    "answer": 2,
+    "explanation": "Levator veli palatini elevates and tensor veli palatini tenses the soft palate to close the nasopharynx."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Which factor most strongly slows gastric emptying via the enterogastric reflex?",
+    "options": [
+      "Warm temperature of chyme",
+      "Carbohydrate-rich chyme",
+      "Fatty, acidic chyme in the duodenum",
+      "Gastric distension only"
+    ],
+    "answer": 2,
+    "explanation": "Fatty and acidic chyme in the duodenum triggers CCK/secretin and neural reflexes that slow gastric emptying."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Motilin primarily:",
+    "options": [
+      "Stimulates migrating motor complex (MMC) in fasting state",
+      "Inhibits gastric motility",
+      "Stimulates gallbladder contraction more than CCK",
+      "Blocks pancreatic enzyme secretion"
+    ],
+    "answer": 0,
+    "explanation": "Motilin initiates MMC 'housekeeping' peristaltic waves during fasting."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Non-heme iron is absorbed mainly in the duodenum after reduction to:",
+    "options": [
+      "Fe3+ via DMT1 transporter",
+      "Fe2+ via DMT1 transporter",
+      "Ferritin-bound complex",
+      "Heme-Fe via SGLT1"
+    ],
+    "answer": 1,
+    "explanation": "Duodenal cytochrome b reduces Fe3+ to Fe2+, which is transported by DMT1 into enterocytes."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Water absorption in the small intestine occurs primarily via:",
+    "options": [
+      "Transcellular active transport of water",
+      "Solvent drag and osmosis coupled to solute absorption",
+      "Endocytosis into enterocytes",
+      "Active aquaporin pumps"
+    ],
+    "answer": 1,
+    "explanation": "Water follows osmotic gradients created by nutrient and electrolyte absorption (solvent drag)."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Short-chain fatty acids (SCFAs) produced by colonic bacteria are absorbed in the colon mainly by:",
+    "options": [
+      "Carrier-mediated uptake and simple diffusion",
+      "Micelle formation with bile salts",
+      "Chylomicron formation",
+      "Active pumping by ENaC"
+    ],
+    "answer": 0,
+    "explanation": "SCFAs (acetate, propionate, butyrate) are absorbed by carrier-mediated mechanisms and diffusion in colonocytes."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Prostaglandins in the stomach protective barrier primarily:",
+    "options": [
+      "Increase acid secretion",
+      "Decrease mucus and bicarbonate",
+      "Increase mucus and bicarbonate and maintain mucosal blood flow",
+      "Stimulate pepsin activity"
+    ],
+    "answer": 2,
+    "explanation": "PGE2/PGI2 enhance mucus/bicarbonate and blood flow; NSAIDs inhibit prostaglandin synthesis, predisposing to ulcers."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Which vitamin requires pancreatic enzymes to release it from binding proteins before absorption and also requires intrinsic factor for ileal uptake?",
+    "options": [
+      "Vitamin A",
+      "Vitamin B6",
+      "Vitamin B12",
+      "Vitamin C"
+    ],
+    "answer": 2,
+    "explanation": "Dietary B12 is protein-bound; pancreatic proteases free it, then IF-B12 complexes are absorbed in the terminal ileum."
+  },
+  {
+    "topic": "Digestive System",
+    "stem": "Which statement about the gastrocolic reflex is TRUE?",
+    "options": [
+      "It inhibits colonic mass movements after meals",
+      "It is mediated by enteric and parasympathetic pathways and increases colonic motility after eating",
+      "It causes relaxation of the ileocecal valve",
+      "It occurs only during fasting"
+    ],
+    "answer": 1,
+    "explanation": "The gastrocolic reflex increases colonic motility and mass movements in response to gastric distension/ingestion."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The rate-limiting enzyme of glycolysis is:",
+    "options": [
+      "Hexokinase",
+      "Phosphofructokinase-1 (PFK-1)",
+      "Pyruvate kinase",
+      "Glucose-6-phosphate isomerase"
+    ],
+    "answer": 1,
+    "explanation": "PFK‑1 commits glucose to glycolysis; it is activated by AMP and fructose‑2,6‑bisphosphate, inhibited by ATP and citrate."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Fructose-2,6-bisphosphate (F2,6BP) allosterically:",
+    "options": [
+      "Inhibits PFK-1 and stimulates FBPase-1",
+      "Stimulates PFK-1 and inhibits FBPase-1",
+      "Has no effect on glycolysis",
+      "Stimulates pyruvate dehydrogenase complex"
+    ],
+    "answer": 1,
+    "explanation": "F2,6BP promotes glycolysis (PFK‑1) and inhibits gluconeogenesis (FBPase‑1); insulin increases F2,6BP in liver."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The pyruvate dehydrogenase complex requires which set of cofactors?",
+    "options": [
+      "TPP, lipoic acid, CoA, FAD, NAD+",
+      "Biotin, PLP, THF",
+      "Cobalamin, FMN, QH2",
+      "Carnitine, CoQ, cytochrome c"
+    ],
+    "answer": 0,
+    "explanation": "PDH uses E1‑E3 subunits with TPP (B1), lipoate, CoA (B5), FAD (B2), and NAD+ (B3)."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "During the fed state in liver, which combination is expected?",
+    "options": [
+      "↑ Glycogenesis, ↑ Lipogenesis, ↓ Gluconeogenesis",
+      "↓ Glycogenesis, ↑ Gluconeogenesis, ↑ Ketogenesis",
+      "↑ Glycogenolysis, ↑ Lipolysis, ↑ Ketogenesis",
+      "↓ Glycolysis, ↑ Proteolysis"
+    ],
+    "answer": 0,
+    "explanation": "Insulin promotes storage: glycogenesis and lipogenesis; gluconeogenesis is suppressed."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Transport of long-chain fatty acids into mitochondria for β-oxidation is rate-limited by:",
+    "options": [
+      "Carnitine palmitoyltransferase I (CPT-1)",
+      "Carnitine palmitoyltransferase II (CPT-2)",
+      "Acetyl-CoA carboxylase",
+      "Fatty acid synthase"
+    ],
+    "answer": 0,
+    "explanation": "CPT‑1 on the outer mitochondrial membrane controls entry; malonyl‑CoA inhibits CPT‑1 during fatty acid synthesis."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which pathway generates NADPH required for reductive biosynthesis and antioxidant defense?",
+    "options": [
+      "Glycolysis",
+      "Pentose phosphate pathway (oxidative phase)",
+      "TCA cycle",
+      "Urea cycle"
+    ],
+    "answer": 1,
+    "explanation": "The oxidative branch of the PPP produces NADPH and ribose‑5‑phosphate; NADPH maintains reduced glutathione."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which tissue is obligatorily dependent on glucose under normal conditions?",
+    "options": [
+      "Hepatocytes",
+      "Renal medulla",
+      "Cardiac muscle at rest",
+      "Adipose tissue"
+    ],
+    "answer": 1,
+    "explanation": "The renal medulla relies primarily on glycolysis and requires glucose; RBCs also require glucose exclusively."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The primary site for de novo lipogenesis in humans is:",
+    "options": [
+      "Skeletal muscle mitochondria",
+      "Liver cytosol (and adipose) from citrate-derived acetyl-CoA",
+      "Mitochondrial matrix of the heart",
+      "Peroxisomes of RBCs"
+    ],
+    "answer": 1,
+    "explanation": "Citrate exported to cytosol is cleaved to acetyl‑CoA for fatty acid synthesis predominantly in liver (and adipose)."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "Which enzyme is the rate-limiting step of cholesterol synthesis and target of statins?",
+    "options": [
+      "HMG-CoA lyase",
+      "HMG-CoA reductase",
+      "Squalene synthase",
+      "Acetyl-CoA carboxylase"
+    ],
+    "answer": 1,
+    "explanation": "HMG‑CoA reductase converts HMG‑CoA to mevalonate; statins competitively inhibit this enzyme."
+  },
+  {
+    "topic": "Metabolism",
+    "stem": "The alanine cycle differs from the Cori cycle because:",
+    "options": [
+      "Alanine cycle transports nitrogen as alanine to the liver; Cori cycle transports lactate for gluconeogenesis",
+      "Both transport only lactate",
+      "Cori cycle carries ammonia; alanine cycle carries lactate",
+      "Both occur exclusively during the fed state"
+    ],
+    "answer": 0,
+    "explanation": "Muscle transaminates pyruvate to alanine to carry nitrogen to the liver; Cori cycle shuttles lactate to the liver."
   }
 ];
 
@@ -1626,15 +1847,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('submitBtn').addEventListener('click', computeScore);
   document.getElementById('resetBtn').addEventListener('click', resetQuiz);
 });
-</script>
 
-<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js', {scope: './'}).catch(function(e){console.log('SW registration failed:', e);});
   });
 }
 </script>
-
 </body>
 </html>
